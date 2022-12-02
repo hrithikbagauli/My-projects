@@ -9,15 +9,20 @@
 </head>
 
 <body>
-    <h1>Booking Appointment App</h1>
     <form id="myform">
-        <label for="username">Username</label><br>
-        <input type="text" name="username" id="name"><br>
-        <label for="contact">Phone no.</label><br>
-        <input type="number" name="contact" id="contact"><br>
-        <label for="email">Email</label><br>
-        <input type="email" name="email" id="email"><br>
-        <input type="submit" value="Submit">
+        <label for="expenseamount">Choose expenseamount:</label>
+        <input type="number" name="expenseamount" id="expenseamount">
+
+        <label for="description">Choose description:</label>
+        <input type="text" name="description" id="description">
+
+        <label for="category">Choose a category:</label>
+        <select name="category" id="category">
+            <option value="movie">movie</option>
+            <option value="food">food</option>
+            <option value="petrol">petrol</option>
+        </select>
+        <input type="submit" value="Add Expense">
     </form>
     <ul id="items"></ul>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js"></script>

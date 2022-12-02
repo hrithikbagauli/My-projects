@@ -1,22 +1,22 @@
 const Sequelize = require('sequelize'); //this will import a class or constructor function and hence we've used capital 'S'.
 const sequelize = require('../util/database');
 
-const User = sequelize.define('users', {
+const User = sequelize.define('expenses', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true
   },
-  username: {
+  expenseamount: {
+    type: Sequelize.DOUBLE,
+    allowNull: false
+  },
+  description: {
     type: Sequelize.STRING,
     allowNull: false
   },
-  phone: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  email: {
+  category: {
     type: Sequelize.STRING,
     allowNull: false
   }

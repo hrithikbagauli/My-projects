@@ -1,14 +1,14 @@
 const User = require('../models/user');
 
 exports.postform = (req, res, next)=>{
-    const username = req.body.username;
-    const email = req.body.email;
-    const phone = req.body.phone;
+    const expenseamount = req.body.expenseamount;
+    const description = req.body.description;
+    const category = req.body.category;
 
     User.create({
-        username: username,
-        phone: phone,
-        email: email
+        expenseamount: expenseamount,
+        description: description,
+        category: category
     })
     .then(result=> res.json(result))
     .catch(err=>{
