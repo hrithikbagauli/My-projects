@@ -27,6 +27,9 @@ exports.getdata = (req, res, next)=>{
 
 exports.postDeleteItem = (req, res, next)=>{
     User.findByPk(req.body.id)
-    .then(user=> user.destroy())
+    .then(user=> {
+        res.json(user);
+        user.destroy();
+    })
     .catch(err=>console.log(err));
 }

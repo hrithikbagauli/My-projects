@@ -17,11 +17,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
 
 myform.addEventListener('submit', function (e) {
     e.preventDefault();
-    axios.post('http://localhost:4000', {expenseamount: expenseamount.value, description: description.value, category: category.value})
-        .then(res => {
-            showOnScreen(expenseamount.value, description.value, category.value, res.data.id);
-        })
-        .catch(err => console.log(err));
+    saveData()
 })
 
 function showOnScreen(expenseamount, description, category, id) {
@@ -36,12 +32,35 @@ function showOnScreen(expenseamount, description, category, id) {
     li.appendChild(editbtn);
     ul.appendChild(li);
 
-    delbtn.addEventListener('click', function (e) {
+    delbtn.addEventListener('click', function(e) {
         e.preventDefault();
         const item_id = e.target.parentElement.id;
-        ul.removeChild(e.target.parentElement);
-        axios.post('http://localhost:4000/deleteItem', {id: item_id})
-        .catch(err => console.log(err));
+        deleteItem(e.target.parentElement, item_id);
     })
+
+    editbtn.addEventListener('click', function(e){
+        e.preventDefault();
+        const item_id = e.target.parentElement.id;
+        deleteItem(e.target.parentElement, item_id);
+    })
+}
+
+function deleteItem(target, item_id) {
+    ul.removeChild(target);
+    axios.post('http://localhost:4000/deleteItem', { id: item_id })
+    .then(res=>{
+        expenseamount.value = res.data.expenseamount;
+        description.value = res.data.description;
+        category.value = res.data.category;
+    })
+    .catch(err => console.log(err));
+}
+
+function saveData(){
+    axios.post('http://localhost:4000', { expenseamount: expenseamount.value, description: description.value, category: category.value })
+        .then(res => {
+            showOnScreen(expenseamount.value, description.value, category.value, res.data.id);
+        })
+        .catch(err => console.log(err));
 }
 
