@@ -1,35 +1,26 @@
 const User = require('../models/user');
 
-exports.postform = (req, res, next)=>{
+exports.postform = async (req, res, next) => {
     const expenseamount = req.body.expenseamount;
     const description = req.body.description;
     const category = req.body.category;
 
-    User.create({
+    const result = await User.create({
         expenseamount: expenseamount,
         description: description,
         category: category
     })
-    .then(result=> res.json(result))
-    .catch(err=>{
-        console.log(err);
-    })
+    
+    res.json(result);
 }
 
-exports.getdata = (req, res, next)=>{
-    User
-    .findAll()
-    .then(users => {
-        res.json(users);
-    })
-    .catch(err=>console.log(err));
+exports.getdata = async (req, res, next) => {
+    const users = await User.findAll();
+    res.json(users);
 }
 
-exports.postDeleteItem = (req, res, next)=>{
-    User.findByPk(req.body.id)
-    .then(user=> {
-        res.json(user);
-        user.destroy();
-    })
-    .catch(err=>console.log(err));
+exports.postDeleteItem = async (req, res, next) => {
+    const user = await User.findByPk(req.body.id)
+    res.json(user);
+    user.destroy();
 }

@@ -4,20 +4,17 @@ const description = document.getElementById('description');
 const category = document.getElementById('category');
 const ul = document.getElementById('items');
 
-document.addEventListener('DOMContentLoaded', function (e) {
+document.addEventListener('DOMContentLoaded', async function (e) {
     e.preventDefault();
-    axios.get('http://localhost:4000')
-        .then(res => {
-            res.data.forEach(i => {
-                showOnScreen(i.expenseamount, i.description, i.category, i.id);
-            })
-        })
-        .catch(err => console.log(err));
+    const res = await axios.get('http://localhost:4000');
+    res.data.forEach(i => {
+        showOnScreen(i.expenseamount, i.description, i.category, i.id);
+    })
 })
 
 myform.addEventListener('submit', function (e) {
     e.preventDefault();
-    saveData()
+    saveData();
 })
 
 function showOnScreen(expenseamount, description, category, id) {
@@ -32,35 +29,30 @@ function showOnScreen(expenseamount, description, category, id) {
     li.appendChild(editbtn);
     ul.appendChild(li);
 
-    delbtn.addEventListener('click', function(e) {
+    delbtn.addEventListener('click', function (e) {
         e.preventDefault();
         const item_id = e.target.parentElement.id;
         deleteItem(e.target.parentElement, item_id);
     })
 
-    editbtn.addEventListener('click', function(e){
+    editbtn.addEventListener('click', function (e) {
         e.preventDefault();
         const item_id = e.target.parentElement.id;
-        deleteItem(e.target.parentElement, item_id);
+        deleteItem(e.target.parentElement, item_id, 'edit');
     })
 }
 
-function deleteItem(target, item_id) {
+async function deleteItem(target, item_id, mode) {
     ul.removeChild(target);
-    axios.post('http://localhost:4000/deleteItem', { id: item_id })
-    .then(res=>{
+    const res = await axios.post('http://localhost:4000/deleteItem', { id: item_id })
+    if (mode === 'edit') {
         expenseamount.value = res.data.expenseamount;
         description.value = res.data.description;
         category.value = res.data.category;
-    })
-    .catch(err => console.log(err));
+    }
 }
 
-function saveData(){
-    axios.post('http://localhost:4000', { expenseamount: expenseamount.value, description: description.value, category: category.value })
-        .then(res => {
-            showOnScreen(expenseamount.value, description.value, category.value, res.data.id);
-        })
-        .catch(err => console.log(err));
+async function saveData() {
+    const res = await axios.post('http://localhost:4000', { expenseamount: expenseamount.value, description: description.value, category: category.value })
+    showOnScreen(expenseamount.value, description.value, category.value, res.data.id);
 }
-
