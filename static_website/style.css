@@ -1,0 +1,123 @@
+body{
+    margin: 0;
+}
+
+nav{
+    text-align: center;
+    background-color: black;
+    padding: 0.5rem;
+    position: fixed;
+    width: 100%;
+    
+}
+
+a{
+    color: white;
+    text-decoration: none;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 18px;
+}
+
+.cart_btn{
+    float: right;
+    margin-right: 1rem;
+    background-color: black;
+    color: white;
+    font-size: 16px;
+    border: 2px solid rgba(0, 225, 255, 0.895);
+    border-radius: 4px;
+}
+
+
+header{
+    padding-top: 2rem;
+    top: 0;
+    font-size: 45px;
+    text-align: center;
+    border: 0px solid #777777;
+    background-color: #777777;
+    color: white;
+}
+
+h1{
+    margin: 0px;
+    padding-bottom: 2rem;
+    padding-top: 1.5rem;
+}
+
+h2{
+    text-align: center;
+    font-size: 30px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.card{
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+    margin-left: 22rem;
+}
+
+.card_btn{
+    background-color: rgb(2, 211, 239);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: 0;
+    padding: 4px;
+    margin-left: 2rem;
+}
+
+.music_img{
+    width: 300px;
+    height: 300px;
+}
+
+.merch_img{
+    width: 300px;
+    height: 300px;
+}
+
+.footer_btn{
+    background-color: #777777;
+    color: white;
+    border: 0px;
+    border-radius: 6px;
+    font-size: 16px;
+    padding: 15px;
+    margin-left: 45rem;
+    margin-bottom: 4rem;
+}
+
+footer {
+    position: static;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(2, 211, 239);
+    color: white;
+    text-align: center;
+    font-size: 45px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.logo_img{
+    width: 30px;
+    height: 30px;
+}
+
+.about_img{
+    width: 200px;
+    height: 200px;
+    border-radius: 100%;
+    margin-left: 41rem;
+}
+
+.about_para{
+    margin-left: 4rem;
+    margin-right: 4rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}

@@ -6,7 +6,7 @@ const ul = document.getElementById('items');
 
 document.addEventListener('DOMContentLoaded', async function (e) {
     e.preventDefault();
-    const res = await axios.get('http://localhost:4000');
+    const res = await axios.get('http://localhost:4000').catch(err=>console.log(err));
     res.data.forEach(i => {
         showOnScreen(i.expenseamount, i.description, i.category, i.id);
     })
@@ -44,7 +44,7 @@ function showOnScreen(expenseamount, description, category, id) {
 
 async function deleteItem(target, item_id, mode) {
     ul.removeChild(target);
-    const res = await axios.post('http://localhost:4000/deleteItem', { id: item_id })
+    const res = await axios.post('http://localhost:4000/deleteItem', { id: item_id }).catch(err=>console.log(err));
     if (mode === 'edit') {
         expenseamount.value = res.data.expenseamount;
         description.value = res.data.description;
@@ -53,6 +53,6 @@ async function deleteItem(target, item_id, mode) {
 }
 
 async function saveData() {
-    const res = await axios.post('http://localhost:4000', { expenseamount: expenseamount.value, description: description.value, category: category.value })
+    const res = await axios.post('http://localhost:4000', { expenseamount: expenseamount.value, description: description.value, category: category.value }).catch(err=>console.log(err));
     showOnScreen(expenseamount.value, description.value, category.value, res.data.id);
 }
