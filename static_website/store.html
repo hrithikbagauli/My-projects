@@ -6,74 +6,105 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Commerce Project</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./CSS/style.css">
 </head>
 
 <body>
     <nav>
-        <a href="C:\Users\hrith\Desktop\Practice\home.html">HOME</a>
-        <a href="C:\Users\hrith\Desktop\Practice\store.html">STORE</a>
-        <a href="C:\Users\hrith\Desktop\Practice\about.html">ABOUT</a>
-        <button class="cart_btn">cart</button>
+        <div class="links">
+            <a href="C:\Users\hrith\Desktop\Practice\home.html">HOME</a>
+            <a href="C:\Users\hrith\Desktop\Practice\store.html">STORE</a>
+            <a href="C:\Users\hrith\Desktop\Practice\about.html">ABOUT</a>
+            <button class="cart_btn" id="show_cart1">cart</button>
+        </div>
     </nav>
     <header>
         <h1>The Generics</h1>
     </header>
-
     <main>
         <h2>MUSIC</h2>
-        <div class="card">
-            <div>
-                <h1>Album 1</h1>
-                <img class="music_img" src="https://prasadyash2411.github.io/ecom-website/img/Album%201.png" alt="red blue smoke">
-                <p>$12.99 <button class="card_btn">ADD TO CART</button></p>
+        <div id="cart_div" class="cart_div">
+            <h2>CART</h2>
+            <button id="close_btn" class="close_btn">X</button>
+            <div class="cart_item">
+                <h3>Item - Price - Quantity</h3>
+                <ul id="items">
+                </ul>
             </div>
         </div>
-        <div class="card">
-            <div>
-                <h1>Album 2</h1>
-                <img class="music_img" src="https://prasadyash2411.github.io/ecom-website/img/Album%202.png" alt="black smoke">
-                <p>$14.99 <button class="card_btn">ADD TO CART</button></p>
+        <div class="notification" id="notification">
+            <span id="notification_span"></span>
+        </div>
+        <div id="main_div">
+            <div class="divpair">
+                <div class="card">
+                    <div>
+                        <h1>Album 1</h1>
+                        <img class="music_img" src="./images/redbluesmoke.png" alt="red blue smoke"><br>
+                        <span>$12.99</span>
+                        <button class="card_btn" data-itemname="Album1" data-price="12.99">ADD TO CART</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <h1>Album 2</h1>
+                        <img class="music_img" src="./images/black_smoke.png" alt="black smoke"><br>
+                        <span>$14.99</span>
+                        <button class="card_btn" data-itemname="Album2" data-price="14.99">ADD TO CART</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divpair">
+                <div class="card">
+                    <div>
+                        <h1>Album 3</h1>
+                        <img class="music_img" src="./images/cool_pattern.png" alt="cool pattern"><br>
+                        <span>$9.99</span>
+                        <button class="card_btn" data-itemname="Album3" data-price="9.99">ADD TO CART</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <h1>Album 4</h1>
+                        <img class="music_img" src="./images/prettyimage.png" alt="beautiful image"><br>
+                        <span>$19.99</span>
+                        <button class="card_btn" data-itemname="Album4" data-price="19.99">ADD TO CART</button>
+                    </div>
+                </div>
+            </div>
+
+            <h2>MERCH</h2>
+            <div class="divpair">
+                <div class="card">
+                    <div>
+                        <h1>T-Shirt</h1>
+                        <img class="merch_img" src="./images/cool_tshirt.png" alt="t-shirt"><br>
+                        <span>$19.99 </span>
+                        <button class="card_btn" data-itemname="T-Shirt" data-price="19.99">ADD TO CART</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <h1>Coffee Mug</h1>
+                        <img class="merch_img" src="./images/coffee_mug.png" alt="coffee mug"><br>
+                        <span>$3.99 </span>
+                        <button class="card_btn" data-itemname="Coffee mug" data-price="3.99">ADD TO CART</button>
+                    </div>
+                </div>
+                <br><br><br><br>
+                <button class="footer_btn" id="show_cart2">See the cart</button>
             </div>
         </div>
-        <div class="card">
-            <div>
-                <h1>Album 3</h1>
-                <img class="music_img" src="https://prasadyash2411.github.io/ecom-website/img/Album%203.png" alt="cool pattern">
-                <p>$9.99 <button class="card_btn">ADD TO CART</button></p>
-            </div>
-        </div>
-        <div class="card">
-            <div>
-                <h1>Album 4</h1>
-                <img class="music_img" src="https://prasadyash2411.github.io/ecom-website/img/Album%204.png" alt="beautiful image">
-                <p>$19.99 <button class="card_btn">ADD TO CART</button></p>
-            </div>
-        </div>
-        <h2>MERCH</h2>
-        <div class="card">
-            <div>
-                <h1>T-Shirt</h1>
-                <img class="merch_img" src="https://prasadyash2411.github.io/ecom-website/img/Shirt.png" alt="t-shirt">
-                <p>$19.99 <button class="card_btn">ADD TO CART</button></p>
-            </div>
-        </div>
-        <div class="card">
-            <div>
-                <h1>Coffee Mug</h1>
-                <img class="merch_img" src="https://prasadyash2411.github.io/ecom-website/img/Cofee.png" alt="coffee mug">
-                <p>$3.99 <button class="card_btn">ADD TO CART</button></p>
-            </div>
-        </div>
-        <br><br><br><br>
-        <button class="footer_btn">See the cart</button>
     </main>
     <footer>
         The Generics
-        <a href=""><img class="logo_img" src="https://prasadyash2411.github.io/ecom-website/img/6260efc8fc9a9002669d2f4ad9956cc0.jpg" alt="youtube"></a>
-        <a href=""><img class="logo_img" src="https://prasadyash2411.github.io/ecom-website/img/Spotify%20Logo.png" alt="spotify"></a>
-        <a href=""><img class="logo_img" src="https://prasadyash2411.github.io/ecom-website/img/Facebook%20Logo.png" alt="facebook"></a>
+        <a href=""><img class="logo_img" src="./images/youtube.jpg" alt="youtube"></a>
+        <a href=""><img class="logo_img" src="./images/spotify.png" alt="spotify"></a>
+        <a href=""><img class="logo_img" src="./images/facebook.png" alt="facebook"></a>
     </footer>
+    <script src="store.js"></script>
 </body>
 
 </html>
