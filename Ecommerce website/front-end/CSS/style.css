@@ -34,7 +34,7 @@ main{
 .notification{
     border: 0px;
     width: 300px;
-    z-index: 2;
+    z-index: 5;
     position: fixed;
     right: 20px;
     float: right;
@@ -67,7 +67,7 @@ main{
 .cart_div{
     display: none;
     position: fixed;
-    z-index: 10;
+    z-index: 3;
     background-color: rgba(205, 204, 204, 0.973);
     color: black;
     float: right;
@@ -102,6 +102,15 @@ li{
 
 .cart_btn:hover{
     background-color: #3cb0d7;
+}
+
+sup{
+    float: right;
+    font-weight: bold;
+    color: white;
+    z-index: 5;
+    right: 30px;
+    position: fixed;
 }
 
 .cart-header {
@@ -273,7 +282,7 @@ h2{
     border: px solid red;
 }
 
-.divpair{
+.div_items{
     text-align: center;
     padding-left: 4rem;
     padding-right: 4rem;
@@ -293,6 +302,10 @@ h2{
     font-size: 16px;
     padding: 15px;
     font-weight: bold;
+}
+
+.footer_btn_div{
+    text-align: center;
 }
 
 .footer_btn:hover{
