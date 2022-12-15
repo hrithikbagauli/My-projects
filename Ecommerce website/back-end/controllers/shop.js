@@ -5,8 +5,15 @@ exports.getProducts = (req, res, next) => {
   Product.findAll()
     .then(products => {
       res.json(products);
+      // res.render('shop/product-list', {
+      //   prods: products,
+      //   pageTitle: 'All Products',
+      //   path: '/products'
+      // });
     })
-    .catch(err=>console.log(err));
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 exports.getProduct = (req, res, next) => {
@@ -50,11 +57,7 @@ exports.getCart = (req, res, next) => {
     .then(cart => {
       return cart.getProducts()
         .then(products => {
-          res.render('shop/cart', {
-            path: '/cart',
-            pageTitle: 'Your Cart',
-            products: products
-          });
+          res.json(products);
         }).catch(err => console.log(err));
     })
     .catch(err => console.log(err));
