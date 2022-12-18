@@ -294,6 +294,40 @@ h2{
     height: 300px;
 }
 
+.pagination_div{
+    text-align: center;
+}
+
+.pagination_div button{
+    background-color: rgb(2, 211, 239);
+    color: white;
+    border: 0px;
+    font-size: 16px;
+    height: 30px;
+    width: 25px;
+}
+
+.pagination_div button:hover{
+    background-color: #3cb0d7;
+}
+
+.pagination_div_cart{
+    text-align: center;
+}
+
+.pagination_div_cart button{
+    background-color: rgb(2, 211, 239);
+    color: white;
+    border: 0px;
+    font-size: 16px;
+    height: 30px;
+    width: 25px;
+}
+
+.pagination_div_cart button:hover{
+    background-color: #3cb0d7;
+}
+
 .footer_btn{
     background-color: rgb(2, 211, 239);
     color: white;

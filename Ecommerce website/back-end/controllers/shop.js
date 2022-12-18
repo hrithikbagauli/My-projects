@@ -1,15 +1,29 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
 
+const items_per_page = 2;
+
 exports.getProducts = (req, res, next) => {
+  let page = 1;
+  if (req.query.page) {
+    page = parseInt(req.query.page);
+  }
+
   Product.findAll()
     .then(products => {
-      res.json(products);
-      // res.render('shop/product-list', {
-      //   prods: products,
-      //   pageTitle: 'All Products',
-      //   path: '/products'
-      // });
+      totalItems = products.length;
+      return Product.findAll({ offset: (page - 1) * items_per_page, limit: items_per_page });
+    })
+    .then(products => {
+      res.json({
+        products: products,
+        currentPage: page,
+        hasNextPage: page * items_per_page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / items_per_page)
+      });
     })
     .catch(err => {
       console.log(err);
@@ -53,14 +67,41 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
+  let page = 1;
+  let cart_quantity=0;
+  let total=0;
+  if (req.query.page) {
+    page = parseInt(req.query.page);
+  }
+  
   req.user.getCart()
     .then(cart => {
-      return cart.getProducts()
+      cart.getProducts()
+      .then(products =>{
+        cart_quantity = products.length;
+        let sum = 0;
+        for(let i=0; i<products.length; i++){
+          sum = sum + products[i].price;
+        }
+        total = sum;
+      })
+      .then(()=>{
+        return cart.getProducts({ offset: (page - 1) * items_per_page, limit: items_per_page})
         .then(products => {
-          res.json(products);
+          res.json({
+            products: products,
+            total: total,
+            cart_quantity: cart_quantity,
+            currentPage: page,
+            hasNextPage: page * items_per_page < cart_quantity,
+            hasPreviousPage: page > 1,
+            nextPage: page + 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(cart_quantity / items_per_page)
+          });
         }).catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
+      }).catch(err => console.log(err)); 
+    }).catch(err => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
@@ -96,18 +137,32 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   req.user.getCart()
-  .then(cart=>{
-    return cart.getProducts({where: {id: prodId}});
-  })
-  .then(products =>{
-    const product = products[0];
-    return product.cartItem.destroy();
-  })
-  .then(()=>{
-    res.redirect('/cart');
-  })
-  .catch(err=> console.log(err));
+    .then(cart => {
+      return cart.getProducts({ where: { id: prodId } });
+    })
+    .then(products => {
+      const product = products[0];
+      return product.cartItem.destroy();
+    })
+    .then(() => {
+      res.redirect('/cart');
+    })
+    .catch(err => console.log(err));
 };
+
+exports.clearCart = (req, res, next) => {
+  req.user.getCart()
+    .then(cart => {
+      return cart.getProducts();
+    })
+    .then(products => {
+      for (let i = 0; i < products.length; i++) {
+        products[i].cartItem.destroy();
+      }
+      res.redirect('/cart');
+    })
+    .catch(err => console.log(err));
+}
 
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
