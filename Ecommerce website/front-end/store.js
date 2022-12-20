@@ -64,10 +64,10 @@ maindiv.addEventListener('click', function (e) {
                     cart_data.delete(remove_btn.dataset.itemname);
                     remove_btn.parentElement.parentElement.remove();
                     axios.post('http://localhost:4000/cart-delete-item', { productId: remove_btn.id })
-                    .then(res=>{
-                        getCartItems();
-                    })
-                    .catch(err=>console.log(err));
+                        .then(res => {
+                            getCartItems();
+                        })
+                        .catch(err => console.log(err));
                 }
             })
 
@@ -88,17 +88,26 @@ purchase_btn.addEventListener('click', function (e) {
     e.preventDefault();
     const cart_items = document.querySelector('.cart-items');
     if (cart_items.hasChildNodes()) {
-        cart_data.clear();
-        cart_items.replaceChildren();
-        total = 0;
-        total_price.innerHTML = '$0.00';
-        alert('Thank you for the purchase!');
-        document.getElementById('cart_quantity').innerHTML = '0';
+        axios.get('http://localhost:4000/create-order')
+            .then(res => {
+                if (res.data.success == true) {
+                    alert(`Order successfully placed with order id - ${res.data.orderId}!`);
+                    cart_data.clear();
+                    cart_items.replaceChildren();
+                    total_price.innerHTML = '$0.00';
+                    document.getElementById('cart_quantity').innerHTML = '0';
+                }
+                axios.get('http://localhost:4000/clear-cart')
+                    .then(res => {
+                        getCartItems();
+                    })
+                    .catch(err => console.log(err));
+            })
+            .catch(err => console.log(err));
     }
     else {
         alert('Cart is empty!');
     }
-    axios.get('http://localhost:4000/clear-cart').catch(err => console.log(err));
 })
 
 close_btn.addEventListener('click', function (e) {
@@ -134,7 +143,7 @@ function getCartItems() {
     axios.get('http://localhost:4000/cart')
         .then(res => {
             document.getElementById('cart_quantity').innerHTML = res.data.cart_quantity;
-            total_price.innerHTML = '$'+(res.data.total).toFixed(2);
+            total_price.innerHTML = '$' + (res.data.total).toFixed(2);
             showCartPaginationButtons(1);
         })
         .catch(err => console.log(err));
@@ -192,10 +201,10 @@ function showOnCart(res) {
                     cart_data.delete(remove_btn.dataset.itemname);
                     remove_btn.parentElement.parentElement.remove();
                     axios.post('http://localhost:4000/cart-delete-item', { productId: remove_btn.id })
-                    .then(res=>{
-                        getCartItems();
-                    })
-                    .catch(err=>console.log(err));
+                        .then(res => {
+                            getCartItems();
+                        })
+                        .catch(err => console.log(err));
                 }
             })
         }
