@@ -7,7 +7,7 @@ const ul = document.getElementById('items');
 const notification = document.getElementById('notification');
 const notification_span = document.getElementById('notification_span');
 const purchase_btn = document.querySelector('.btn-purchase');
-const cart_data = new Map();
+const cart_data = new Set();
 const total_price = document.querySelector('.cart-total-price');
 const pagination_div_cart = document.querySelector('.pagination_div_cart');
 const pagination_div = document.querySelector('.pagination_div');
@@ -42,7 +42,7 @@ maindiv.addEventListener('click', function (e) {
 
             let rawcontent;
             cart_items.append(cart_row);
-            cart_data.set(e.target.dataset.itemname, { price: e.target.dataset.price, quantity: 1 });
+            cart_data.add(e.target.dataset.itemname);
 
             rawcontent = `
             <div class="cart-item cart-column">
@@ -176,12 +176,17 @@ function showOnCart(res) {
         const cart_items = document.querySelector('.cart-items');
         cart_items.replaceChildren();
         let rawcontent;
+        let count = 0;
         total = 0;
         for (let i = 0; i < res.length; i++) {
-            cart_data.set(res[i].title, { price: res[i].price, quantity: 1 });
+            cart_data.add(res[i].title);
             const cart_row = document.createElement('div');
             cart_items.append(cart_row);
             cart_row.classList.add('cart-row');
+            let item_quantity = 1;
+            if(res[i].cartItem.quantity){
+                item_quantity = res[i].cartItem.quantity;
+            }
             rawcontent =
                 `<div class="cart-item cart-column">
             <img src="${res[i].imageUrl}" width="100" height="100">
@@ -189,10 +194,10 @@ function showOnCart(res) {
             </div>
             <span class="cart-price cart-column">${res[i].price}</span>
             <div class="cart-quantity cart-column">
-            <input class="cart-quantity-input" value="1" type="text" data-price="${res[i].price}" disabled>
+            <input type="number" value="${item_quantity}" class="cart-quantity-input" id="${res[i].id} data-price="${res[i].price}">
             <button class="deletebtn" id="${res[i].id}" data-itemname="${res[i].title}" data-price="${res[i].price}">REMOVE</button>
             </div><br>`
-            cart_row.innerHTML = cart_row.innerHTML + rawcontent;
+            cart_row.innerHTML = rawcontent;
 
             cart_row.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -207,6 +212,21 @@ function showOnCart(res) {
                         .catch(err => console.log(err));
                 }
             })
+
+
+            const quantity_input = document.getElementsByClassName('cart-quantity-input');
+            quantity_input[count].addEventListener('change', function (e) {
+                e.preventDefault();
+                if (e.target.value > 0) {
+                    axios.post('http://localhost:4000/cart', { productId: e.target.id, quantity: e.target.value })
+                        .then(res => total_price.innerHTML = '$' + (res.data.total).toFixed(2))
+                        .catch(err => console.log(err));
+                }
+                else{
+                    e.target.value = 1;
+                }
+            })
+            count++;
         }
 
     }

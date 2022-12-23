@@ -1,0 +1,146 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+main{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin-bottom: 22rem;
+    margin-top: 5rem;
+}
+
+nav {
+    text-align: center;
+    background-color: black;
+    padding: 0.5rem;
+    position: fixed;
+    width: 100%; 
+    top: 0;
+    right: 0;
+}
+
+.links{
+    text-align: center;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 18px;
+}
+
+.logo_img{
+    width: 30px;
+    height: 30px;
+    margin-bottom: 16px;
+}
+
+header {
+    margin-top: 2rem;
+    font-size: 45px;
+    text-align: center;
+    border: 0px solid #777777;
+    background-color: #777777;
+    color: white;
+    width: 100%;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 1.5rem;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 50px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin-bottom: 4rem;
+}
+
+p{
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+footer {
+    position: static;
+    width: 100%;
+    background-color: rgb(2, 211, 239);
+    color: white;
+    text-align: center;
+    font-size: 45px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 0;
+}
+
+.maindiv{
+    margin: auto;
+    width: 800px;
+}
+
+ul{
+    padding-inline-start: 0;
+}
+
+.item_name{
+    vertical-align: middle;
+    font-size: 20px;
+    margin:auto;
+    padding-left: 5px;
+}
+
+img{
+    vertical-align: middle;
+}
+
+li{
+    border: 2px solid black;
+    list-style: none;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.order_header{
+    border-bottom: 2px solid rgb(131, 121, 121);
+    margin-bottom: 4px;
+    padding-top: 10px;
+    padding-bottom: 50px;
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.order_item{
+    padding: 4px;
+}
+
+h3{
+    padding: 0;
+    margin: 0;
+}
+
+.order_placed{
+    float: left;
+}
+
+.order_id{
+    float: right;
+}
+
+.order_placed_data{
+    float: left;
+    font-weight: 50;
+}
+
+.order_id_data{
+    float: right;
+    font-weight: 50;
+}
+

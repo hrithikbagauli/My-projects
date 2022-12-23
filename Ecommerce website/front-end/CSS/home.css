@@ -1,9 +1,14 @@
+*{
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
 }
 
 main{
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: center;
 }
 
 nav {
@@ -13,7 +18,7 @@ nav {
     position: fixed;
     width: 100%; 
     top: 0;
-    right: 0;
+    margin-bottom: 0;
 }
 
 .links{
@@ -29,7 +34,7 @@ a {
 }
 
 header {
-    margin-top: 2rem;
+    margin-top: 0;
     font-size: 45px;
     text-align: center;
     border: 0px solid #777777;
@@ -38,12 +43,9 @@ header {
     width: 100%;
 }
 
-h1 {
-    margin-top: 0;
+h1{
+    margin-top: 2rem;
     margin-bottom: 0;
-    padding-bottom: 1.5rem;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }
 
 h2 {
@@ -61,12 +63,20 @@ h2 {
     margin-bottom: 20px;
 }
 
+.latest-album:hover{
+    background-color: black;
+}
+
+.buy-btn:hover{
+    background-color: rgb(28, 149, 201);
+}
+
 .play-btn {
     background-color: #777777;
     border: 2px solid white;
     color: white;
     font-size: 30px;
-    padding: 10px;
+    padding-right: 2px;
     border-radius: 50%;
     margin-bottom: 20px;
     text-align: center;
@@ -74,10 +84,26 @@ h2 {
     height: 70px;
 }
 
+.play-btn:hover{
+    background-color: black;
+}
 
+.logo_img{
+    width: 30px;
+    height: 30px;
+}
+
+.tour-item{
+    padding: 10px;
+}
+
+.tour_spec_place{
+    margin-left: 150px;
+}
 
 footer {
     position: static;
+    left: 0;
     bottom: 0;
     width: 100%;
     background-color: rgb(2, 211, 239);
@@ -86,12 +112,13 @@ footer {
     font-size: 45px;
     padding-top: 1rem;
     padding-bottom: 1rem;
+    margin-top: 60px;
 }
 
 .tour-item{
-    width: 900px;
+    width: 800px;
     height: 70px;
-    margin-left: 320px;
+    border-bottom: 2px solid black;
 }
 
 .buy-btn{
@@ -105,18 +132,9 @@ footer {
     font-weight: bold;
 }
 
-span{
-    margin: 20px;
-}
-
 .maindiv{
-    margin-bottom: 1.5rem;
-    margin-top: 3rem;
-}
-
-hr{
-    width: 900px;
-    margin-right: 18rem;
-    
+    margin: auto;
+    width: 804px;
+    text-align: left;
 }
 
