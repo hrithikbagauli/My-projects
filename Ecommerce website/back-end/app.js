@@ -38,10 +38,10 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use((req, res)=>{
   if(req.url=='/'){
-    res.sendFile(path.join(__dirname, '/public/html/store.html'));
+    res.sendFile(path.join(__dirname, '/public/frontend/store.html'));
   }
   else{
-    res.sendFile(path.join(__dirname, `/public/html/${req.url}`));
+    res.sendFile(path.join(__dirname, `/public/frontend/${req.url}`));
   }
 })
 // app.use(errorController.get404);
