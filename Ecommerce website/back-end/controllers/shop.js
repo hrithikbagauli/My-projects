@@ -158,23 +158,25 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-exports.clearCart = (req, res, next) => {
-  req.user.getCart()
-    .then(cart => {
-      return cart.getProducts();
-    })
-    .then(products => {
-      for (let i = 0; i < products.length; i++) {
-        products[i].cartItem.destroy();
-      }
-      res.redirect('/cart');
-    })
-    .catch(err => console.log(err));
-}
+// exports.clearCart = (req, res, next) => {
+//   req.user.getCart()
+//     .then(cart => {
+//       return cart.getProducts();
+//     })
+//     .then(products => {
+//       for (let i = 0; i < products.length; i++) {
+//         products[i].cartItem.destroy();
+//       }
+//       res.redirect('/cart');
+//     })
+//     .catch(err => console.log(err));
+// }
 
 exports.postOrder = (req, res, next) => {
+  let fetchedCart;
   req.user.getCart()
     .then(cart => {
+      fetchedCart = cart;
       return cart.getProducts();
     })
     .then(products => {
@@ -184,6 +186,10 @@ exports.postOrder = (req, res, next) => {
             product.orderItem = { quantity: product.cartItem.quantity };
             return product;
           }));
+
+          for (let i = 0; i < products.length; i++) {
+            products[i].cartItem.destroy();
+          }
           res.json({ orderId: order.id, success: true });
         })
         .catch(err => console.log(err))

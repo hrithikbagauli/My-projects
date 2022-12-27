@@ -97,11 +97,12 @@ purchase_btn.addEventListener('click', function (e) {
                     total_price.innerHTML = '$0.00';
                     document.getElementById('cart_quantity').innerHTML = '0';
                 }
-                axios.get('http://localhost:4000/clear-cart')
-                    .then(res => {
-                        getCartItems();
-                    })
-                    .catch(err => console.log(err));
+                getCartItems();
+                // axios.get('http://localhost:4000/clear-cart')
+                //     .then(res => {
+                //         getCartItems();
+                //     })
+                //     .catch(err => console.log(err));
             })
             .catch(err => console.log(err));
     }
