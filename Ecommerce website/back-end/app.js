@@ -36,8 +36,15 @@ app.use((req, res, next) => {
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
-
-app.use(errorController.get404);
+app.use((req, res)=>{
+  if(req.url=='/'){
+    res.sendFile(path.join(__dirname, '/public/html/store.html'));
+  }
+  else{
+    res.sendFile(path.join(__dirname, `/public/html/${req.url}`));
+  }
+})
+// app.use(errorController.get404);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
