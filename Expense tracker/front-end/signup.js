@@ -19,26 +19,23 @@ myform.addEventListener('submit', function (e) {
     else {
         axios.post('http://localhost:4000/user-signup', { name: username.value, password: password.value, email: email.value })
             .then(res => {
-                if (res.data == 'fail') {
-                    alert_div.innerHTML = 'User already exists!'
-                    alert_div.classList.add('alert-danger');
-                    alert_div.style.display = 'block';
-                    setTimeout(() => {
-                        alert_div.style.display = 'none';
-                        alert_div.classList.remove('alert-danger');
-                    }, 3000);
-                }
-                else{
-                    alert_div.innerHTML = 'Account created successfully!'
-                    alert_div.classList.add('alert-success');
-                    alert_div.style.display = 'block';
-                    setTimeout(() => {
-                        alert_div.style.display = 'none';
-                        alert_div.classList.remove('alert-success');
-                    }, 3000);
-                }
+                alert_div.innerHTML = 'Account created successfully!'
+                alert_div.classList.add('alert-success');
+                alert_div.style.display = 'block';
+                setTimeout(() => {
+                    alert_div.style.display = 'none';
+                    alert_div.classList.remove('alert-success');
+                }, 3000);
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                alert_div.innerHTML = 'This user already exists!'
+                alert_div.classList.add('alert-danger');
+                alert_div.style.display = 'block';
+                setTimeout(() => {
+                    alert_div.style.display = 'none';
+                    alert_div.classList.remove('alert-danger');
+                }, 3000);
+            });
     }
 
 })
