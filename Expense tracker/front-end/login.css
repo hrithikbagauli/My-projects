@@ -1,0 +1,14 @@
+.gradient-custom-4 {
+    background: linear-gradient(to left, rgb(132, 232, 250), rgb(29, 247, 243))
+}
+
+h1{
+    padding-top: 30px;
+    padding-bottom: 30px;
+    font-size: 50px;
+    text-shadow: 2px 2px #b1adad;
+}
+
+.container{
+    padding-bottom: 10rem;
+}
