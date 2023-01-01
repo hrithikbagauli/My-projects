@@ -1,0 +1,32 @@
+const Expense = require('../models/expense');
+
+exports.postAddExpense = (req, res, next)=>{
+    Expense.create({name: req.body.itemname, description: req.body.description, amount: req.body.amount, category: req.body.category, img_src: req.body.img_src})
+    .then((result)=>{
+        res.json(result.dataValues);
+    })
+    .catch(err=>console.log(err));
+}
+
+exports.getExpenses = (req, res, next)=>{
+    Expense.findAll()
+    .then(result=>{
+        res.json(result);
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
+
+exports.postDeleteItem = (req, res, next)=>{
+    const id = req.body.id;
+    Expense.findByPk(id)
+    .then(result=>{
+        result.destroy()
+        .then(()=>{
+            res.json('successfully deleted!');
+        })
+        .catch(err=>console.log(err));
+    })
+    .catch(err=>console.log(err));
+}

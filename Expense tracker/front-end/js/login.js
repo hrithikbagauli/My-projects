@@ -25,6 +25,7 @@ myform.addEventListener('submit', function (e) {
                     alert_div.style.display = 'none';
                     alert_div.classList.remove('alert-success');
                 }, 2000);
+                window.location.href = "file:///C:/Users/hrith/Desktop/Practice/front-end/html/expense_tracker.html";
             })
             .catch(err => {
                 alert_div.innerHTML = err.response.data.message;

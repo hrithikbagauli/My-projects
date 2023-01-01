@@ -6,7 +6,6 @@ const alert_div = document.getElementById('alert_div');
 
 myform.addEventListener('submit', function (e) {
     e.preventDefault();
-
     if (username.value == '' || password.value == '' || email.value == '') {
         alert_div.innerHTML = 'Please enter all the fields!'
         alert_div.classList.add('alert-danger');

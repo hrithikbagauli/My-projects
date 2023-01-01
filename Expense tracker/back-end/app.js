@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
+const expenseRoutes = require('./routes/expense');
 
 const app = express();
 const dotenv = require('dotenv');
@@ -14,6 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use(userRoutes);
+app.use(expenseRoutes);
 
 sequelize
 .sync()
