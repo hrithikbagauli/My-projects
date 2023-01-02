@@ -5,11 +5,16 @@ const category = document.getElementById('category');
 const myform = document.getElementById('myform');
 const items = document.getElementById('items');
 const total_spent = document.getElementById('total');
+const hello_user = document.getElementById('hello_user');
+const logout_btn = document.getElementById('logout_btn');
 let src;
 let isEmpty;
+let token;
 
 document.addEventListener('DOMContentLoaded', function (e) {
     e.preventDefault();
+    token = localStorage.getItem('token');
+    hello_user.innerHTML = localStorage.getItem('username');
     getData();
 })
 
@@ -22,6 +27,12 @@ myform.addEventListener('submit', function (e) {
         findSource();
         saveData();
     }
+})
+
+logout_btn.addEventListener('click', function(e){
+    e.preventDefault(e);
+    localStorage.clear();
+    window.location.href = "../html/login.html";
 })
 
 function showOnScreen(itemname, description, amount, category, img_src, id, total) {
@@ -50,7 +61,7 @@ function showOnScreen(itemname, description, amount, category, img_src, id, tota
     tr.addEventListener('click', function(e){
         e.preventDefault();
         if(e.target.classList.contains('deletebtn')){
-            axios.post('http://localhost:4000/delete-item', {id: e.target.id})
+            axios.post('http://localhost:4000/delete-item', {id: e.target.id}, {headers:{"Authorization": token}})
             .then(()=>{
                 getData();
             })
@@ -63,7 +74,7 @@ function saveData() {
     if (isEmpty) {
         items.replaceChildren();
     }
-    axios.post('http://localhost:4000/add-expense', { itemname: itemname.value, description: description.value, amount: amount.value, category: category.value, img_src: src })
+    axios.post('http://localhost:4000/add-expense', {itemname: itemname.value, description: description.value, amount: amount.value, category: category.value, img_src: src }, {headers:{"Authorization": token}})
         .then((res) => {
             isEmpty = false;
             getData();
@@ -72,7 +83,7 @@ function saveData() {
 }
 
 function getData() {
-    axios.get('http://localhost:4000/get-expenses')
+    axios.get('http://localhost:4000/get-expenses', {headers:{"Authorization": token}})
         .then(res => {
             let total = 0;
             if (res.data.length > 0) {
@@ -104,7 +115,7 @@ function findSource() {
             src = 'https://raw.githubusercontent.com/hrithikbagauli/Practice-repo/ee9743978abdf117ac0d7083783820962f2f217f/bill.png';
             break;
         case "travel":
-            src = 'https://raw.githubusercontent.com/hrithikbagauli/Practice-repo/ee9743978abdf117ac0d7083783820962f2f217f/travel.png';
+            src = 'https://raw.githubusercontent.com/hrithikbagauli/Practice-repo/de86d3abbde17a07d52968f59e7c2f3cf3aa00dc/travel.png';
             break;
         case "shop":
             src = 'https://raw.githubusercontent.com/hrithikbagauli/Practice-repo/ee9743978abdf117ac0d7083783820962f2f217f/shop.png';

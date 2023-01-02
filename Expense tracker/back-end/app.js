@@ -5,6 +5,8 @@ const cors = require('cors');
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
+const User = require('./models/user');
+const Expense = require('./models/expense');
 
 const app = express();
 const dotenv = require('dotenv');
@@ -17,6 +19,9 @@ app.use(cors());
 app.use(userRoutes);
 app.use(expenseRoutes);
 
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
 sequelize
 .sync()
 .then(()=>{
@@ -27,23 +32,3 @@ sequelize
   console.log(err);
 });
 
-//   .sync({ force: true })
-// //   .sync()
-//   .then(result => {
-//     return User.findByPk(1);
-//   })
-//   .then(user => {
-//     if (!user) {
-//       return User.create({ name: 'Ross', email: 'ross@gmail.com' });
-//     }
-//     return user;
-//   })
-//   .then(user => {
-//     return user.createCart();
-//   })
-//   .then(cart=>{
-//     app.listen(4000);
-//   })
-//   .catch(err => {
-//     console.log(err);
-//   });
