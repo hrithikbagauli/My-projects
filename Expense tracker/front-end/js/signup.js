@@ -24,7 +24,8 @@ myform.addEventListener('submit', function (e) {
                 setTimeout(() => {
                     alert_div.style.display = 'none';
                     alert_div.classList.remove('alert-success');
-                }, 3000);
+                    window.location.href = "../html/login.html";
+                }, 1000);
             })
             .catch(err => {
                 alert_div.innerHTML = 'This user already exists!'

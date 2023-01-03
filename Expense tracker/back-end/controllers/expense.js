@@ -11,7 +11,7 @@ exports.postAddExpense = (req, res, next)=>{
 exports.getExpenses = (req, res, next)=>{
     req.user.getExpenses()
     .then(result=>{
-        res.json(result);
+        res.json({result: result, isPremium: req.user.premiumUser});
     })
     .catch(err=>{
         console.log(err);

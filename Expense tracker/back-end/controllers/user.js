@@ -1,10 +1,12 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
 
 exports.postUserSignup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
-    User.create({ name: req.body.name, email: req.body.email, password: hash })
+    User.create({ name: req.body.name, email: req.body.email, password: hash, premiumUser: false })
       .then(() => {
         res.status(201).json({ success: true });
       })
@@ -37,5 +39,5 @@ exports.postUserLogin = (req, res, next) => {
 }
 
 function generateToken(id, user){
-  return jwt.sign({userId: id, name: user}, 'secretKey');
+  return jwt.sign({userId: id, name: user}, process.env.TOKEN_SECRET_KEY);
 }

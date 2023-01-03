@@ -6,7 +6,8 @@ const myform = document.getElementById('myform');
 const items = document.getElementById('items');
 const total_spent = document.getElementById('total');
 const hello_user = document.getElementById('hello_user');
-const logout_btn = document.getElementById('logout_btn');
+const logout_user = document.getElementById('logout_user');
+const buy_premium = document.getElementById('buy_premium');
 let src;
 let isEmpty;
 let token;
@@ -29,10 +30,47 @@ myform.addEventListener('submit', function (e) {
     }
 })
 
-logout_btn.addEventListener('click', function(e){
+logout_user.addEventListener('click', function(e){
     e.preventDefault(e);
     localStorage.clear();
     window.location.href = "../html/login.html";
+})
+
+buy_premium.addEventListener('click', function(e){
+    axios.get('http://localhost:4000/purchase/buy-premium', {headers: {Authorization: token}})
+    .then(res=>{
+        let options = {
+            "key": res.data.key_id,
+            "order_id": res.data.order.id,
+            "handler": function(res){
+                axios.post('http://localhost:4000/purchase/update-transaction-status', {
+                    orderId: options.order_id,
+                    payment_id: res.razorpay_payment_id
+                }, {headers: {"Authorization": token}})
+                .then(()=>{
+                    alert("You're a premium user now!");
+                    buy_premium.style.display = 'none';
+                })
+                .catch(err=>console.log(err));
+            }
+        }
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault(e);
+
+        rzp1.on('payment.failed', function(res){
+            axios.post('http://localhost:4000/purchase/update-transaction-status',{
+                orderId: res.data.order.id,
+                payment_id: null
+            }, {headers: {"Authorization": token}})
+            .then(()=>{
+                alert('Payment failed!');
+            })
+            .catch(err=>console.log(err));
+            
+        })
+    })
+    .catch(err=>console.log(err));
 })
 
 function showOnScreen(itemname, description, amount, category, img_src, id, total) {
@@ -86,12 +124,18 @@ function getData() {
     axios.get('http://localhost:4000/get-expenses', {headers:{"Authorization": token}})
         .then(res => {
             let total = 0;
-            if (res.data.length > 0) {
+            if(!res.data.isPremium){
+                buy_premium.style.display = 'block';
+            }
+            else{
+                buy_premium.style.display = 'none';
+            }
+            if (res.data.result.length > 0) {
                 items.replaceChildren();
                 isEmpty = false;
-                for (let i = 0; i < res.data.length; i++) {
-                    total = total + parseFloat(res.data[i].amount);
-                    showOnScreen(res.data[i].name, res.data[i].description, res.data[i].amount, res.data[i].category, res.data[i].img_src, res.data[i].id, total);
+                for (let i = 0; i < res.data.result.length; i++) {
+                    total = total + parseFloat(res.data.result[i].amount);
+                    showOnScreen(res.data.result[i].name, res.data.result[i].description, res.data.result[i].amount, res.data.result[i].category, res.data.result[i].img_src, res.data.result[i].id, total);
                 }
             }
             else {
@@ -111,7 +155,7 @@ function findSource() {
         case "entertainment":
             src = 'https://raw.githubusercontent.com/hrithikbagauli/Practice-repo/ee9743978abdf117ac0d7083783820962f2f217f/entertainment.png';
             break;
-        case "bills":
+        case "bill":
             src = 'https://raw.githubusercontent.com/hrithikbagauli/Practice-repo/ee9743978abdf117ac0d7083783820962f2f217f/bill.png';
             break;
         case "travel":
