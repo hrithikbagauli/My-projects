@@ -8,6 +8,7 @@ const total_spent = document.getElementById('total');
 const hello_user = document.getElementById('hello_user');
 const logout_user = document.getElementById('logout_user');
 const buy_premium = document.getElementById('buy_premium');
+const account_type = document.getElementById('account_type');
 let src;
 let isEmpty;
 let token;
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
 })
 
 myform.addEventListener('submit', function (e) {
-    e.preventDefault();
+    // e.preventDefault();
     if (itemname.value == '' || description.value == '' || amount == '') {
         alert('Please enter all the values');
     }
@@ -50,6 +51,7 @@ buy_premium.addEventListener('click', function(e){
                 .then(()=>{
                     alert("You're a premium user now!");
                     buy_premium.style.display = 'none';
+                    account_type.style.display = 'block';
                 })
                 .catch(err=>console.log(err));
             }
@@ -58,20 +60,21 @@ buy_premium.addEventListener('click', function(e){
         rzp1.open();
         e.preventDefault(e);
 
-        rzp1.on('payment.failed', function(res){
-            axios.post('http://localhost:4000/purchase/update-transaction-status',{
-                orderId: res.data.order.id,
-                payment_id: null
-            }, {headers: {"Authorization": token}})
-            .then(()=>{
-                alert('Payment failed!');
-            })
-            .catch(err=>console.log(err));
-            
+        rzp1.on('payment.failed', function(){
+            alert('Payment failed!');
+            updatePaymentStatus(res);
         })
     })
     .catch(err=>console.log(err));
 })
+
+function updatePaymentStatus(res){
+    axios.post('http://localhost:4000/purchase/update-transaction-status',{
+                orderId: res.data.order.id,
+                payment_id: null
+            }, {headers: {"Authorization": token}})
+            .catch(err=>console.log(err));
+}
 
 function showOnScreen(itemname, description, amount, category, img_src, id, total) {
     const tr = document.createElement('tr');
@@ -126,9 +129,11 @@ function getData() {
             let total = 0;
             if(!res.data.isPremium){
                 buy_premium.style.display = 'block';
+                account_type.style.display = 'none';
             }
             else{
                 buy_premium.style.display = 'none';
+                account_type.style.display = 'block';
             }
             if (res.data.result.length > 0) {
                 items.replaceChildren();
