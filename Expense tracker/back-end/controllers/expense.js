@@ -1,5 +1,3 @@
-const Expense = require('../models/expense');
-
 exports.postAddExpense = (req, res, next)=>{
     req.user.createExpense({name: req.body.itemname, description: req.body.description, amount: req.body.amount, category: req.body.category, img_src: req.body.img_src})
     .then((result)=>{

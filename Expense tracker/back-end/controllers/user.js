@@ -6,7 +6,7 @@ dotenv.config();
 
 exports.postUserSignup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
-    User.create({ name: req.body.name, email: req.body.email, password: hash, premiumUser: false })
+    User.create({ name: req.body.name, email: req.body.email, password: hash, premiumUser: false, total: 0})
       .then(() => {
         res.status(201).json({ success: true });
       })
@@ -40,4 +40,12 @@ exports.postUserLogin = (req, res, next) => {
 
 function generateToken(id, user){
   return jwt.sign({userId: id, name: user}, process.env.TOKEN_SECRET_KEY);
+}
+
+exports.updateTotal = (req, res, next)=>{
+  req.user.update({total: req.body.total})
+  .then(result=>{
+    res.status(202).json({success: true});
+  })
+  .catch(err=>console.log(err));
 }

@@ -27,13 +27,16 @@
 
                 <div class="d-flex mx-1 mt-1">
                     <!-- <a id="logout_btn" href="login.html" class="d-flex flex-column text-white fw-bold text-decoration-none">logout</a> -->
-                    <button class="btn rounded-circle btn-light border-0 d-flex align-items-center px-0" title="click here!" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: rgb(52, 51, 51);">
-                        <img src="../css/images/user.png" class="profile_pic border border-5 border-dark rounded-circle mx-3" />
+                    <button class="btn rounded-circle btn-light border-0 d-flex align-items-center px-0"
+                        title="click here!" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                        aria-expanded="false" style="background-color: rgb(52, 51, 51);">
+                        <img src="../css/images/user.png"
+                            class="profile_pic border border-5 border-dark rounded-circle mx-3" />
                     </button>
                     <ul class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton1">
                         <h6 id="account_type" style="background-color: rgb(52, 51, 51); color: white;">PREMIUM USER</h6>
                         <li id="buy_premium"><a class="dropdown-item" href="#">Buy premium</a></li>
-                        <li id="logout_user"><a class="dropdown-item" href="#">logout</a></li>
+                        <li id="logout_user"><a class="dropdown-item pr-2" href="#">logout</a></li>
                         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                     </ul>
                 </div>
@@ -73,9 +76,25 @@
 
 
         <div class="container p-2 mb-3 rounded-bottom" style=" background-color: rgb(52, 51, 51);">
-            <!-- <ul id="items" class="list-group list-group-light"></ul> -->
             <table class="table align-middle mb-0 bg-white">
                 <tbody id="items"></tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-center my-5">
+            <button id="leaderboard_btn" class="btn-lg btn-light border-0"
+                style="background-color: rgb(52, 51, 51); color: white; display: none;">Show leaderboard</button>
+        </div>
+
+        <div id="leaderboard_div" style="display: none;">
+            <h2 class="leaderboard_title">Leaderboard</h2>
+            <table id="leaderboard" class="leaderboard mb-5">
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Total money spent</th>
+                </tr>
+
             </table>
         </div>
 

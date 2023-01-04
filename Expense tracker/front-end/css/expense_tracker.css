@@ -34,6 +34,26 @@ body {
   background-color: royalblue;
 }
 
+.leaderboard_title{
+  text-align: center;
+}
+
+.leaderboard {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.leaderboard tr:nth-child(even) {
+  background-color: white;
+  color: black;
+}
+
 li {
   margin: 4px;
 }

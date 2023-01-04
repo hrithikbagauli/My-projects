@@ -9,6 +9,9 @@ const hello_user = document.getElementById('hello_user');
 const logout_user = document.getElementById('logout_user');
 const buy_premium = document.getElementById('buy_premium');
 const account_type = document.getElementById('account_type');
+const leaderboard_btn = document.getElementById('leaderboard_btn');
+const leaderboard_div = document.getElementById('leaderboard_div');
+const leaderboard = document.getElementById('leaderboard');
 let src;
 let isEmpty;
 let token;
@@ -21,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
 })
 
 myform.addEventListener('submit', function (e) {
-    // e.preventDefault();
+    e.preventDefault();
     if (itemname.value == '' || description.value == '' || amount == '') {
         alert('Please enter all the values');
     }
@@ -31,49 +34,97 @@ myform.addEventListener('submit', function (e) {
     }
 })
 
-logout_user.addEventListener('click', function(e){
+leaderboard_btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    getLeaderboard();
+    leaderboard_div.style.display = 'block';
+    leaderboard_btn.innerHTML = 'Refresh scores';
+})
+
+function getLeaderboard() {
+    axios.get('http://localhost:4000/purchase/get-scoreboard')
+        .then(res => {
+            const map = new Map();
+            for (let i = 0; i < res.data.length; i++) {
+                if (map.has(res.data[i].user.name)) {
+                    map.set(res.data[i].user.name, map.get(res.data[i].user.name) + res.data[i].amount);
+                }
+                else {
+                    map.set(res.data[i].user.name, res.data[i].amount);
+                }
+            }
+
+            const mapSort1 = new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
+
+            leaderboard.replaceChildren();
+            let content =
+                `<tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Total money spent</th>
+                </tr>`
+            const tr = document.createElement('tr');
+            tr.innerHTML = content;
+            leaderboard.append(tr);
+            let count = 1;
+            mapSort1.forEach(function (val, key) {
+                const tr = document.createElement('tr');
+                let content =
+                    `<td>${count}</td>
+                    <td>${key}</td>
+                    <td>${val}</td>`
+                tr.innerHTML = content;
+                count++;
+                leaderboard.append(tr);
+            })
+        })
+        .catch(err => console.log(err));
+}
+
+logout_user.addEventListener('click', function (e) {
     e.preventDefault(e);
     localStorage.clear();
     window.location.href = "../html/login.html";
 })
 
-buy_premium.addEventListener('click', function(e){
-    axios.get('http://localhost:4000/purchase/buy-premium', {headers: {Authorization: token}})
-    .then(res=>{
-        let options = {
-            "key": res.data.key_id,
-            "order_id": res.data.order.id,
-            "handler": function(res){
-                axios.post('http://localhost:4000/purchase/update-transaction-status', {
-                    orderId: options.order_id,
-                    payment_id: res.razorpay_payment_id
-                }, {headers: {"Authorization": token}})
-                .then(()=>{
-                    alert("You're a premium user now!");
-                    buy_premium.style.display = 'none';
-                    account_type.style.display = 'block';
-                })
-                .catch(err=>console.log(err));
+buy_premium.addEventListener('click', function (e) {
+    axios.get('http://localhost:4000/purchase/buy-premium', { headers: { Authorization: token } })
+        .then(res => {
+            let options = {
+                "key": res.data.key_id,
+                "order_id": res.data.order.id,
+                "handler": function (res) {
+                    axios.post('http://localhost:4000/purchase/update-transaction-status', {
+                        orderId: options.order_id,
+                        payment_id: res.razorpay_payment_id
+                    }, { headers: { "Authorization": token } })
+                        .then(() => {
+                            alert("You're a premium user now!");
+                            buy_premium.style.display = 'none';
+                            account_type.style.display = 'block';
+                            leaderboard_btn.style.display = 'block';
+                        })
+                        .catch(err => console.log(err));
+                }
             }
-        }
-        const rzp1 = new Razorpay(options);
-        rzp1.open();
-        e.preventDefault(e);
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+            e.preventDefault(e);
 
-        rzp1.on('payment.failed', function(){
-            alert('Payment failed!');
-            updatePaymentStatus(res);
+            rzp1.on('payment.failed', function () {
+                alert('Payment failed!');
+                updatePaymentStatus(res);
+            })
         })
-    })
-    .catch(err=>console.log(err));
+        .catch(err => console.log(err));
 })
 
-function updatePaymentStatus(res){
-    axios.post('http://localhost:4000/purchase/update-transaction-status',{
-                orderId: res.data.order.id,
-                payment_id: null
-            }, {headers: {"Authorization": token}})
-            .catch(err=>console.log(err));
+function updatePaymentStatus(res) {
+    axios.post('http://localhost:4000/purchase/update-transaction-status', {
+        orderId: res.data.order.id,
+        payment_id: null
+    }, { headers: { "Authorization": token } })
+        .catch(err => console.log(err));
 }
 
 function showOnScreen(itemname, description, amount, category, img_src, id, total) {
@@ -99,14 +150,14 @@ function showOnScreen(itemname, description, amount, category, img_src, id, tota
     tr.innerHTML = rawcontent;
     items.append(tr);
     total_spent.innerHTML = total;
-    tr.addEventListener('click', function(e){
+    tr.addEventListener('click', function (e) {
         e.preventDefault();
-        if(e.target.classList.contains('deletebtn')){
-            axios.post('http://localhost:4000/delete-item', {id: e.target.id}, {headers:{"Authorization": token}})
-            .then(()=>{
-                getData();
-            })
-            .catch(err=>console.log(err));
+        if (e.target.classList.contains('deletebtn')) {
+            axios.post('http://localhost:4000/delete-item', { id: e.target.id }, { headers: { "Authorization": token } })
+                .then(() => {
+                    getData();
+                })
+                .catch(err => console.log(err));
         }
     })
 }
@@ -115,7 +166,7 @@ function saveData() {
     if (isEmpty) {
         items.replaceChildren();
     }
-    axios.post('http://localhost:4000/add-expense', {itemname: itemname.value, description: description.value, amount: amount.value, category: category.value, img_src: src }, {headers:{"Authorization": token}})
+    axios.post('http://localhost:4000/add-expense', { itemname: itemname.value, description: description.value, amount: amount.value, category: category.value, img_src: src }, { headers: { "Authorization": token } })
         .then((res) => {
             isEmpty = false;
             getData();
@@ -124,16 +175,18 @@ function saveData() {
 }
 
 function getData() {
-    axios.get('http://localhost:4000/get-expenses', {headers:{"Authorization": token}})
+    axios.get('http://localhost:4000/get-expenses', { headers: { "Authorization": token } })
         .then(res => {
             let total = 0;
-            if(!res.data.isPremium){
+            if (!res.data.isPremium) {
                 buy_premium.style.display = 'block';
                 account_type.style.display = 'none';
+                leaderboard_btn.style.display = 'none';
             }
-            else{
+            else {
                 buy_premium.style.display = 'none';
                 account_type.style.display = 'block';
+                leaderboard_btn.style.display = 'block';
             }
             if (res.data.result.length > 0) {
                 items.replaceChildren();
