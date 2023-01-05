@@ -42,41 +42,31 @@ leaderboard_btn.addEventListener('click', function (e) {
 })
 
 function getLeaderboard() {
-    axios.get('http://localhost:4000/purchase/get-scoreboard')
+    axios.get('http://localhost:4000/purchase/get-scoreboard', { headers: { Authorization: token } })
         .then(res => {
-            const map = new Map();
-            for (let i = 0; i < res.data.length; i++) {
-                if (map.has(res.data[i].user.name)) {
-                    map.set(res.data[i].user.name, map.get(res.data[i].user.name) + res.data[i].amount);
-                }
-                else {
-                    map.set(res.data[i].user.name, res.data[i].amount);
-                }
-            }
-
-            const mapSort1 = new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
-
-            leaderboard.replaceChildren();
-            let content =
-                `<tr>
+            if (res.data.length > 0) {
+                leaderboard.replaceChildren();
+                let content =
+                    `<tr>
                 <th>Rank</th>
                 <th>Username</th>
                 <th>Total money spent</th>
                 </tr>`
-            const tr = document.createElement('tr');
-            tr.innerHTML = content;
-            leaderboard.append(tr);
-            let count = 1;
-            mapSort1.forEach(function (val, key) {
                 const tr = document.createElement('tr');
-                let content =
-                    `<td>${count}</td>
-                    <td>${key}</td>
-                    <td>${val}</td>`
                 tr.innerHTML = content;
-                count++;
                 leaderboard.append(tr);
-            })
+                let count = 1;
+                for (let i = 0; i < res.data.length; i++) {
+                    const tr = document.createElement('tr');
+                    let content =
+                        `<td>${count}</td>
+                    <td>${res.data[i].name}</td>
+                    <td>${res.data[i].total_cost}</td>`
+                    tr.innerHTML = content;
+                    count++;
+                    leaderboard.append(tr);
+                }
+            }
         })
         .catch(err => console.log(err));
 }

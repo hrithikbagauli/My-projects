@@ -3,6 +3,7 @@ dotenv.config();
 const Razorpay = require('Razorpay');
 const User = require('../models/user');
 const Expense = require('../models/expense');
+const sequelize = require('../util/database');
 
 exports.getPremium = (req, res, next) => {
     try {
@@ -57,11 +58,30 @@ exports.updateTransactionStatus = (req, res, next) => {
 }
 
 exports.getScoreboard = (req, res, next) => {
-    Expense.findAll({
-        include: [{ model: User }]
-    })
-        .then(result => {
-            res.json(result);
+    if(req.user.premiumUser){
+        User.findAll({
+            attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'total_cost']],
+            include: [{
+                model: Expense,
+                attributes: []
+            }],
+            group: ['user.id'],
+            order: [sequelize.literal('total_cost DESC')]
+    
         })
-        .catch(err => console.log(err));
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => console.log(err));
+    }
+    else{
+        res.status('401').json([]);
+    }
+
+    //the equivalent query for the above sequelize code inside user.findAll() is :- 
+    // SELECT user.id, user.name, SUM(expenses.amount) AS total_cost
+    // FROM user
+    // INNER JOIN expenses ON expenses.user_id = user.id
+    // GROUP BY user.id
+    // ORDER BY total_cost DESC
 }
