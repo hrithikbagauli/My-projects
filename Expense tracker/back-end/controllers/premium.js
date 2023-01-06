@@ -67,7 +67,6 @@ exports.getScoreboard = (req, res, next) => {
             }],
             group: ['user.id'],
             order: [sequelize.literal('total_cost DESC')]
-    
         })
             .then(result => {
                 res.json(result);

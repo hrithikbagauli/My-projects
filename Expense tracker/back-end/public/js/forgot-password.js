@@ -4,7 +4,6 @@ const email = document.getElementById('email');
 myform.addEventListener('submit', function(e){
     e.preventDefault();
     axios.post('http://localhost:4000/password/forgot-password', {email: email.value})
-    .catch(err=>{
-        console.log(err);
-    });
+    .then(res=>console.log(res))
+    .catch(err=>console.log(err));
 })
