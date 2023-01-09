@@ -12,6 +12,12 @@ const account_type = document.getElementById('account_type');
 const leaderboard_btn = document.getElementById('leaderboard_btn');
 const leaderboard_div = document.getElementById('leaderboard_div');
 const leaderboard = document.getElementById('leaderboard');
+const reportbtn_div = document.getElementById('reportbtn_div');
+const reportbtn = document.getElementById('reportbtn');
+const report_table = document.getElementById('report_table');
+const report_btn = document.getElementById('report_btn');
+const report_title = document.getElementById('report_title');
+const report_div = document.getElementById('report_div');
 let src;
 let isEmpty;
 let token;
@@ -93,6 +99,7 @@ buy_premium.addEventListener('click', function (e) {
                             buy_premium.style.display = 'none';
                             account_type.style.display = 'block';
                             leaderboard_btn.style.display = 'block';
+                            report_btn.style.display = 'block';
                         })
                         .catch(err => console.log(err));
                 }
@@ -172,11 +179,13 @@ function getData() {
                 buy_premium.style.display = 'block';
                 account_type.style.display = 'none';
                 leaderboard_btn.style.display = 'none';
+                report_btn.style.display = 'none';
             }
             else {
                 buy_premium.style.display = 'none';
                 account_type.style.display = 'block';
                 leaderboard_btn.style.display = 'block';
+                report_btn.style.display = 'block';
             }
             if (res.data.result.length > 0) {
                 items.replaceChildren();
@@ -216,4 +225,59 @@ function findSource() {
             src = 'https://raw.githubusercontent.com/hrithikbagauli/Practice-repo/ee9743978abdf117ac0d7083783820962f2f217f/fuel.png';
             break;
     }
+}
+
+report_btn.addEventListener('click', function(e){
+    e.preventDefault();
+    report_div.style.display = 'block';
+    showReport('Daily');
+})
+
+reportbtn_div.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (e.target.classList.contains('reportbtn')) {
+        showReport(e.target.innerText);
+    }
+})
+
+function showReport(type) {
+
+    axios.get(`http://localhost:4000/purchase/get-report?reportType=${type}`, { headers: { "Authorization": token } })
+        .then(res => { 
+            report_table.replaceChildren();
+            if (res.data.length > 0) {
+                let content =
+                    `<tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Expense</th>
+                    </tr>`
+                const tr = document.createElement('tr');
+                tr.innerHTML = content;
+                report_table.append(tr);
+                let count = 1;
+                for (let i = 0; i < res.data.length; i++) {
+                    const tr = document.createElement('tr');
+
+                    let content =
+                        `<td>${res.data[i].createdAt.slice(0, 10)}</td>
+                        <td>${res.data[i].name}</td>
+                        <td>${res.data[i].description}</td>
+                        <td>${res.data[i].category}</td>
+                        <td>${res.data[i].amount}</td>`
+                    tr.innerHTML = content;
+                    count++;
+                    report_table.append(tr);
+                }
+            }
+            else{
+               const tr = document.createElement('tr');
+               tr.innerHTML = `<td class="text-center fw-bold"> No expenses so far! </td>`;
+               report_table.append(tr);
+            }
+        })
+        .catch(err => console.log(err));
+
 }

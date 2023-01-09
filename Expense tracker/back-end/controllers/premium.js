@@ -58,7 +58,7 @@ exports.updateTransactionStatus = (req, res, next) => {
 }
 
 exports.getScoreboard = (req, res, next) => {
-    if(req.user.premiumUser){
+    if (req.user.premiumUser) {
         User.findAll({
             attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'total_cost']],
             include: [{
@@ -73,8 +73,8 @@ exports.getScoreboard = (req, res, next) => {
             })
             .catch(err => console.log(err));
     }
-    else{
-        res.status('401').json([]);
+    else {
+        res.status(401).json([]);
     }
 
     //the equivalent query for the above sequelize code inside user.findAll() is :- 
@@ -83,4 +83,41 @@ exports.getScoreboard = (req, res, next) => {
     // INNER JOIN expenses ON expenses.user_id = user.id
     // GROUP BY user.id
     // ORDER BY total_cost DESC
+}
+
+exports.getReport = async (req, res, next) => {
+    const reportType = req.query.reportType;
+    let date = new Date();
+
+    if(req.user.premiumUser){
+        try{
+            if (reportType == 'Daily') {
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;  // getMonth() returns a zero-based month, so we need to add 1
+                let day = date.getDate();
+                let formattedDate = `${year}-${month}-${day}`;
+                const result = await req.user.getExpenses({
+                    where: sequelize.where(sequelize.fn('date', sequelize.col('createdAt')), '=', formattedDate)
+                })
+                res.json(result);
+            }
+            else if (reportType == 'Monthly') {
+                const result = await req.user.getExpenses({
+                    where: sequelize.where(sequelize.fn('month', sequelize.col('createdAt')), '=', new Date().getMonth()+1)
+                })
+                res.json(result);
+            }
+            else {
+                const result = await req.user.getExpenses({
+                    where: sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), '=', new Date().getFullYear())
+                })
+                res.json(result);
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    else{
+        res.status(401).json([]);
+    }
 }

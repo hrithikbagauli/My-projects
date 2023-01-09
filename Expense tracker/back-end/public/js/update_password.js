@@ -6,7 +6,8 @@ myform.addEventListener('submit', function(e){
     axios.post('http://localhost:4000/password/update-password', {new_password: new_password.value})
     .then(res=>{
         alert('Password updated successfully!');
-        window.location.href = 'file:\\\C:\Users\hrith\Desktop\Practice\front-end\html\login.html';
+        new_password.value = '';
+        // window.location.href = 'file:\\\C:\Users\hrith\Desktop\Practice\front-end\html\login.html';
     })
     .catch(err=>console.log(err));
 })

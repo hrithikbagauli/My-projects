@@ -23,35 +23,41 @@ body {
 
 .form-inline button {
   padding: 10px 20px;
-  background-color: dodgerblue;
   border: 1px solid #ddd;
-  color: white;
-  cursor: pointer;
   margin: 10px;
 }
 
-.form-inline button:hover {
-  background-color: royalblue;
-}
-
-.leaderboard_title{
-  text-align: center;
-}
-
 .leaderboard {
-  width: 100%;
+  width: 70%;
   border-collapse: collapse;
 }
 
 .leaderboard th, td {
   padding: 8px;
+  
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
 .leaderboard tr:nth-child(even) {
-  background-color: white;
-  color: black;
+  background-color: rgb(159, 161, 159);
+  color: white;
+}
+
+.report_table {
+  width: 70%;
+  border-collapse: collapse;
+}
+
+.report_table th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.report_table tr:nth-child(even) {
+  background-color: rgb(159, 161, 159);
+  color: white;
 }
 
 li {
@@ -130,6 +136,10 @@ delete_btn {
 
   .no_expenses_td{
     font-size: 20px;
+  }
+
+  .report_table{
+    width: 50%;
   }
 }
 
