@@ -3,7 +3,10 @@ dotenv.config();
 const Razorpay = require('Razorpay');
 const User = require('../models/user');
 const Expense = require('../models/expense');
+const Download = require('../models/download');
 const sequelize = require('../util/database');
+const UserServices = require('../services/user-services');
+const S3services = require('../services/S3services');
 
 exports.getPremium = (req, res, next) => {
     try {
@@ -89,8 +92,8 @@ exports.getReport = async (req, res, next) => {
     const reportType = req.query.reportType;
     let date = new Date();
 
-    if(req.user.premiumUser){
-        try{
+    if (req.user.premiumUser) {
+        try {
             if (reportType == 'Daily') {
                 let year = date.getFullYear();
                 let month = date.getMonth() + 1;  // getMonth() returns a zero-based month, so we need to add 1
@@ -103,7 +106,7 @@ exports.getReport = async (req, res, next) => {
             }
             else if (reportType == 'Monthly') {
                 const result = await req.user.getExpenses({
-                    where: sequelize.where(sequelize.fn('month', sequelize.col('createdAt')), '=', new Date().getMonth()+1)
+                    where: sequelize.where(sequelize.fn('month', sequelize.col('createdAt')), '=', new Date().getMonth() + 1)
                 })
                 res.json(result);
             }
@@ -113,11 +116,54 @@ exports.getReport = async (req, res, next) => {
                 })
                 res.json(result);
             }
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     }
-    else{
+    else {
         res.status(401).json([]);
     }
 }
+
+exports.getDownload = async (req, res, next) => {
+    try {
+        const expenses = await UserServices.getExpenses(req);
+        const stringifiedExpenses = JSON.stringify(expenses);
+        const userId = req.user.id;
+        const filename = `expenses${userId} | ${new Date()}.txt`;
+        const fileUrl = await S3services.uploadToS3(stringifiedExpenses, filename);
+        await req.user.createDownload({name: filename, url: fileUrl});
+        res.status(200).json({ fileUrl, success: true });
+    }catch(err){
+        res.status(500).json({ fileUrl: '',success: false});
+    }
+}
+
+// function uploadToS3(data, filename) {
+//     const BUCKET_NAME = process.env.BUCKET_NAME;
+//     const IAM_USER_KEY = process.env.IAM_USER_KEY;
+//     const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
+
+//     let s3bucket = new AWS.S3({
+//         accessKeyId: IAM_USER_KEY,
+//         secretAccessKey: IAM_USER_SECRET,
+//     })
+//     let params = {
+//         Bucket: BUCKET_NAME,
+//         Key: filename,
+//         Body: data,
+//         ACL: 'public-read'
+//     }
+//     return new Promise((resolve, reject) => {
+//         s3bucket.upload(params, (err, s3response) => {
+//             if (err) {
+//                 console.log('something went wrong!');
+//                 reject(err);
+//             }
+//             else {
+//                 console.log('success', s3response);
+//                 resolve(s3response.Location);
+//             }
+//         })
+//     })
+// }

@@ -18,6 +18,8 @@ const report_table = document.getElementById('report_table');
 const report_btn = document.getElementById('report_btn');
 const report_title = document.getElementById('report_title');
 const report_div = document.getElementById('report_div');
+const download_report = document.getElementById('download_report');
+const download_items = document.getElementById('download_items');
 let src;
 let isEmpty;
 let token;
@@ -100,6 +102,7 @@ buy_premium.addEventListener('click', function (e) {
                             account_type.style.display = 'block';
                             leaderboard_btn.style.display = 'block';
                             report_btn.style.display = 'block';
+                            document.getElementById('download_div').style.display = 'block';
                         })
                         .catch(err => console.log(err));
                 }
@@ -157,6 +160,35 @@ function showOnScreen(itemname, description, amount, category, img_src, id, tota
                 .catch(err => console.log(err));
         }
     })
+    axios.get('http://localhost:4000/download/get-downloads', { headers: { "Authorization": token } })
+        .then(downloads => {
+            download_items.replaceChildren();
+            let content;
+            if (downloads.data.length > 0) {
+                for (let i = 0; i < downloads.data.length; i++) {
+                    const li = document.createElement('li');
+                    li.classList.add('list-group-item');
+                    li.classList.add('w-75');
+                    li.classList.add('d-flex');
+                    li.classList.add('justify-content-between');
+                    content = `<span class="pt-1">${downloads.data[i].name}</span><a href="${downloads.data[i].url}"><button class="btn-sm btn-secondary border-0">Download</button></a>`;
+                    li.innerHTML = content;
+                    download_items.append(li);
+                }
+            }
+            else {
+                const li = document.createElement('li');
+                li.classList.add('list-group-item');
+                li.classList.add('w-75');
+                li.classList.add('d-flex');
+                li.classList.add('justify-content-center');
+                li.innerHTML = 'No downloads yet';
+                download_items.append(li);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
 }
 
 function saveData() {
@@ -180,12 +212,14 @@ function getData() {
                 account_type.style.display = 'none';
                 leaderboard_btn.style.display = 'none';
                 report_btn.style.display = 'none';
+                document.getElementById('download_div').style.display = 'none';
             }
             else {
                 buy_premium.style.display = 'none';
                 account_type.style.display = 'block';
                 leaderboard_btn.style.display = 'block';
                 report_btn.style.display = 'block';
+                document.getElementById('download_div').style.display = 'block';
             }
             if (res.data.result.length > 0) {
                 items.replaceChildren();
@@ -227,8 +261,9 @@ function findSource() {
     }
 }
 
-report_btn.addEventListener('click', function(e){
+report_btn.addEventListener('click', function (e) {
     e.preventDefault();
+    report_btn.innerHTML = 'Refresh report';
     report_div.style.display = 'block';
     showReport('Daily');
 })
@@ -241,9 +276,8 @@ reportbtn_div.addEventListener('click', function (e) {
 })
 
 function showReport(type) {
-
     axios.get(`http://localhost:4000/purchase/get-report?reportType=${type}`, { headers: { "Authorization": token } })
-        .then(res => { 
+        .then(res => {
             report_table.replaceChildren();
             if (res.data.length > 0) {
                 let content =
@@ -272,12 +306,18 @@ function showReport(type) {
                     report_table.append(tr);
                 }
             }
-            else{
-               const tr = document.createElement('tr');
-               tr.innerHTML = `<td class="text-center fw-bold"> No expenses so far! </td>`;
-               report_table.append(tr);
+            else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="text-center fw-bold"> No expenses so far! </td>`;
+                report_table.append(tr);
             }
         })
         .catch(err => console.log(err));
 
 }
+
+download_report.addEventListener('click', async function (e) {
+    e.preventDefault();
+    const download = await axios.get('http://localhost:4000/purchase/download', { headers: { "Authorization": token } });
+    window.location.href = download.data.fileUrl;
+})

@@ -129,11 +129,14 @@
                 <button class="reportbtn btn-sm btn-primary text-white border-0 mx-2">Yearly</button>
             </div>
             <div class="d-flex justify-content-center my-3">
-                <button class="btn btn-secondary">Download report</button>
+                <button id="download_report" class="btn btn-secondary">Download report</button>
             </div>
         </div>
 
-
+        <div id="download_div" style="display: none;">
+            <h2 class="text-center">Your downloads</h2>
+            <ul id="download_items" class="list-group d-flex align-items-center mb-5"></ul>
+        </div>
 
         <script src="../js/expense_tracker.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
