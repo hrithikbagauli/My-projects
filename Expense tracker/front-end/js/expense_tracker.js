@@ -21,6 +21,8 @@ const report_div = document.getElementById('report_div');
 const download_report = document.getElementById('download_report');
 const download_items = document.getElementById('download_items');
 const pagination_div = document.getElementById('pagination_div');
+const pagination_div1 = document.getElementById('pagination_div1');
+const items_per_page = document.getElementById('items_per_page');
 let src;
 let isEmpty;
 let token;
@@ -41,6 +43,12 @@ myform.addEventListener('submit', function (e) {
         findSource();
         saveData();
     }
+})
+
+items_per_page.addEventListener('change', function(e){
+    e.preventDefault();
+    localStorage.setItem('items_per_page', items_per_page.value);
+    getData();
 })
 
 leaderboard_btn.addEventListener('click', function (e) {
@@ -204,10 +212,18 @@ function saveData() {
         .catch(err => console.log(err));
 }
 
-function getData() {
-    axios.get('http://localhost:4000/get-expenses', { headers: { "Authorization": token } })
+function getData(page_no) {
+    let page = 1;
+    let items_per_page = 5;
+    if(localStorage.getItem('items_per_page')){
+        items_per_page = localStorage.getItem('items_per_page');
+        document.getElementById('items_per_page').value = localStorage.getItem('items_per_page');
+    }
+    if(page_no){
+        page = page_no;
+    }
+    axios.get(`http://localhost:4000/get-expenses?page=${page}&items_per_page=${items_per_page}`, { headers: { "Authorization": token } })
         .then(res => {
-            let total = 0;
             if (!res.data.isPremium) {
                 buy_premium.style.display = 'block';
                 account_type.style.display = 'none';
@@ -226,8 +242,7 @@ function getData() {
                 items.replaceChildren();
                 isEmpty = false;
                 for (let i = 0; i < res.data.result.length; i++) {
-                    total = total + parseFloat(res.data.result[i].amount);
-                    showOnScreen(res.data.result[i].name, res.data.result[i].description, res.data.result[i].amount, res.data.result[i].category, res.data.result[i].img_src, res.data.result[i].id, total);
+                    showOnScreen(res.data.result[i].name, res.data.result[i].description, res.data.result[i].amount, res.data.result[i].category, res.data.result[i].img_src, res.data.result[i].id, res.data.total);
                 }
             }
             else {
@@ -235,6 +250,8 @@ function getData() {
                 total_spent.innerHTML = "0.00"
                 items.innerHTML = `<tr><td class="no_expenses_td">No expenses yet!</td></tr>`;
             }
+
+            showPaginationButtons1(res);
         })
         .catch(err => console.log(err));
 }
@@ -280,6 +297,13 @@ for (let i = 0; i < pagination_div.children.length; i++) {
     pagination_div.children[i].addEventListener('click', function (e) {
         e.preventDefault();
         showReport('Yearly', parseInt(pagination_div.children[i].value));
+    });
+}
+
+for (let i = 0; i < pagination_div1.children.length; i++) {
+    pagination_div1.children[i].addEventListener('click', function (e) {
+        e.preventDefault();
+        getData(parseInt(pagination_div1.children[i].value));
     });
 }
 
@@ -343,7 +367,46 @@ function showPaginationButtons(res) {
     const last_page = pagination_div.children[4];
 
     current_page.value = res.data.currentPage;
-    current_page.innerText = res.data.currentPage;
+    current_page.textContent = res.data.currentPage;
+    if (res.data.currentPage != 1 && res.data.previousPage != 1) {
+        first_page.style.display = "inline";
+    }
+    else {
+        first_page.style.display = "none";
+    }
+    if (res.data.hasPreviousPage) {
+        previous_page.value = res.data.previousPage;
+        previous_page.style.display = "inline";
+    }
+    else {
+        previous_page.style.display = "none";
+    }
+    if (res.data.hasNextPage) {
+        next_page.value = res.data.nextPage;
+        next_page.style.display = "inline";
+    }
+    else {
+        next_page.style.display = "none";
+    }
+
+    if (res.data.lastPage != res.data.currentPage && res.data.lastPage != res.data.nextPage) {
+        last_page.value = res.data.lastPage;
+        last_page.style.display = "inline";
+    }
+    else {
+        last_page.style.display = "none";
+    }
+}
+
+function showPaginationButtons1(res) {
+    const first_page = pagination_div1.children[0];
+    const previous_page = pagination_div1.children[1];
+    const current_page = pagination_div1.children[2];
+    const next_page = pagination_div1.children[3];
+    const last_page = pagination_div1.children[4];
+
+    current_page.value = res.data.currentPage;
+    current_page.textContent = res.data.currentPage;
     if (res.data.currentPage != 1 && res.data.previousPage != 1) {
         first_page.style.display = "inline";
     }
