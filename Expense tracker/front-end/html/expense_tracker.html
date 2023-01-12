@@ -17,7 +17,7 @@
 <body>
     <p class="text-center my-5 fw-bold display-3">EXPENSE TRACKER</p>
 
-    <div class="container p-0 mt-3">
+    <div class="container p-0 my-3 overflow-auto">
         <div class=" mt-2 mb-2 rounded-top" style="background-color: rgb(52, 51, 51);">
             <div class="d-flex justify-content-between mx-2" style="background-color: rgb(52, 51, 51);">
                 <div class="d-flex flex-column mx-3">
@@ -106,7 +106,7 @@
         <div id="report_div" class="mb-5" style="display: none;">
             <h2 id="report_title" class="report_title text-center">EXPENSES</h2>
             <div class="d-flex justify-content-center">
-                <table id="report_table" class="report_table mb-5">
+                <table id="report_table" class="report_table mb-3">
                     <tr>
                         <th>Date</th>
                         <th>Name</th>
@@ -123,12 +123,21 @@
                     </tr> -->
                 </table><br>
             </div>
+
+            <div id="pagination_div" class="d-flex justify-content-center mb-3">
+                <button value="1" style="display: none;">First</button>
+                <button style="display: none;">Previous</button>
+                <button style="display: none;">CurrentPage</button>
+                <button style="display: none;">Next</button>
+                <button style="display: none;">Last</button>
+            </div>
+
             <div id="reportbtn_div" class="d-flex justify-content-center">
                 <button class="reportbtn btn-sm btn-primary text-white border-0 mx-2">Daily</button>
                 <button class="reportbtn btn-sm btn-primary text-white border-0 mx-2">Monthly</button>
                 <button class="reportbtn btn-sm btn-primary text-white border-0 mx-2">Yearly</button>
             </div>
-            <div class="d-flex justify-content-center my-3">
+            <div class="d-flex justify-content-center mt-3">
                 <button id="download_report" class="btn btn-secondary">Download report</button>
             </div>
         </div>
@@ -140,6 +149,7 @@
 
         <script src="../js/expense_tracker.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </div>
 </body>
 
 </html>

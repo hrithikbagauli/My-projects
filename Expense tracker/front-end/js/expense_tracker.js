@@ -20,6 +20,7 @@ const report_title = document.getElementById('report_title');
 const report_div = document.getElementById('report_div');
 const download_report = document.getElementById('download_report');
 const download_items = document.getElementById('download_items');
+const pagination_div = document.getElementById('pagination_div');
 let src;
 let isEmpty;
 let token;
@@ -265,21 +266,28 @@ report_btn.addEventListener('click', function (e) {
     e.preventDefault();
     report_btn.innerHTML = 'Refresh report';
     report_div.style.display = 'block';
-    showReport('Daily');
+    showReport('Daily', 1);
 })
 
 reportbtn_div.addEventListener('click', function (e) {
     e.preventDefault();
     if (e.target.classList.contains('reportbtn')) {
-        showReport(e.target.innerText);
+        showReport(e.target.textContent, 1);
     }
 })
 
-function showReport(type) {
-    axios.get(`http://localhost:4000/purchase/get-report?reportType=${type}`, { headers: { "Authorization": token } })
+for (let i = 0; i < pagination_div.children.length; i++) {
+    pagination_div.children[i].addEventListener('click', function (e) {
+        e.preventDefault();
+        showReport('Yearly', parseInt(pagination_div.children[i].value));
+    });
+}
+
+function showReport(type, page_no) {
+    axios.get(`http://localhost:4000/purchase/get-report?reportType=${type}&page=${page_no}`, { headers: { "Authorization": token } })
         .then(res => {
             report_table.replaceChildren();
-            if (res.data.length > 0) {
+            if (res.data.result.length > 0) {
                 let content =
                     `<tr>
                     <th>Date</th>
@@ -291,19 +299,24 @@ function showReport(type) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = content;
                 report_table.append(tr);
-                let count = 1;
-                for (let i = 0; i < res.data.length; i++) {
+                for (let i = 0; i < res.data.result.length; i++) {
                     const tr = document.createElement('tr');
 
                     let content =
-                        `<td>${res.data[i].createdAt.slice(0, 10)}</td>
-                        <td>${res.data[i].name}</td>
-                        <td>${res.data[i].description}</td>
-                        <td>${res.data[i].category}</td>
-                        <td>${res.data[i].amount}</td>`
+                        `<td>${res.data.result[i].createdAt.slice(0, 10)}</td>
+                        <td>${res.data.result[i].name}</td>
+                        <td>${res.data.result[i].description}</td>
+                        <td>${res.data.result[i].category}</td>
+                        <td>${res.data.result[i].amount}</td>`
                     tr.innerHTML = content;
-                    count++;
                     report_table.append(tr);
+                }
+                if(type=='Yearly'){
+                    showPaginationButtons(res);
+                    pagination_div.style.visibility = 'visible';
+                }
+                else{
+                    pagination_div.style.visibility = 'hidden';
                 }
             }
             else {
@@ -321,3 +334,42 @@ download_report.addEventListener('click', async function (e) {
     const download = await axios.get('http://localhost:4000/purchase/download', { headers: { "Authorization": token } });
     window.location.href = download.data.fileUrl;
 })
+
+function showPaginationButtons(res) {
+    const first_page = pagination_div.children[0];
+    const previous_page = pagination_div.children[1];
+    const current_page = pagination_div.children[2];
+    const next_page = pagination_div.children[3];
+    const last_page = pagination_div.children[4];
+
+    current_page.value = res.data.currentPage;
+    current_page.innerText = res.data.currentPage;
+    if (res.data.currentPage != 1 && res.data.previousPage != 1) {
+        first_page.style.display = "inline";
+    }
+    else {
+        first_page.style.display = "none";
+    }
+    if (res.data.hasPreviousPage) {
+        previous_page.value = res.data.previousPage;
+        previous_page.style.display = "inline";
+    }
+    else {
+        previous_page.style.display = "none";
+    }
+    if (res.data.hasNextPage) {
+        next_page.value = res.data.nextPage;
+        next_page.style.display = "inline";
+    }
+    else {
+        next_page.style.display = "none";
+    }
+
+    if (res.data.lastPage != res.data.currentPage && res.data.lastPage != res.data.nextPage) {
+        last_page.value = res.data.lastPage;
+        last_page.style.display = "inline";
+    }
+    else {
+        last_page.style.display = "none";
+    }
+}

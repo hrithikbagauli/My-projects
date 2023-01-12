@@ -89,33 +89,46 @@ exports.getScoreboard = (req, res, next) => {
 }
 
 exports.getReport = async (req, res, next) => {
+    let page = 1;
+    if (req.query.page) {
+        page = parseInt(req.query.page);
+    }
     const reportType = req.query.reportType;
     let date = new Date();
-
+    const items_per_page = 5;
+    let result;
     if (req.user.premiumUser) {
         try {
+            const totalItems = (await req.user.getExpenses()).length;
             if (reportType == 'Daily') {
                 let year = date.getFullYear();
                 let month = date.getMonth() + 1;  // getMonth() returns a zero-based month, so we need to add 1
                 let day = date.getDate();
                 let formattedDate = `${year}-${month}-${day}`;
-                const result = await req.user.getExpenses({
+                result = await req.user.getExpenses({
                     where: sequelize.where(sequelize.fn('date', sequelize.col('createdAt')), '=', formattedDate)
                 })
-                res.json(result);
             }
             else if (reportType == 'Monthly') {
-                const result = await req.user.getExpenses({
-                    where: sequelize.where(sequelize.fn('month', sequelize.col('createdAt')), '=', new Date().getMonth() + 1)
+                result = await req.user.getExpenses({
+                    where: sequelize.where(sequelize.fn('month', sequelize.col('createdAt')), '=', date.getMonth() + 1)
                 })
-                res.json(result);
             }
             else {
-                const result = await req.user.getExpenses({
-                    where: sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), '=', new Date().getFullYear())
+                result = await req.user.getExpenses({
+                    offset: (page - 1) * items_per_page, limit: items_per_page,
+                    where: sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), '=', date.getFullYear())
                 })
-                res.json(result);
             }
+            res.json({
+                result,
+                currentPage: page,
+                hasNextPage: page * items_per_page < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / items_per_page)
+            });
         } catch (err) {
             console.log(err)
         }
@@ -132,10 +145,10 @@ exports.getDownload = async (req, res, next) => {
         const userId = req.user.id;
         const filename = `expenses${userId} | ${new Date()}.txt`;
         const fileUrl = await S3services.uploadToS3(stringifiedExpenses, filename);
-        await req.user.createDownload({name: filename, url: fileUrl});
+        await req.user.createDownload({ name: filename, url: fileUrl });
         res.status(200).json({ fileUrl, success: true });
-    }catch(err){
-        res.status(500).json({ fileUrl: '',success: false});
+    } catch (err) {
+        res.status(500).json({ fileUrl: '', success: false });
     }
 }
 
