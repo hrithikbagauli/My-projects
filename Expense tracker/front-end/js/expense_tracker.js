@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
     token = localStorage.getItem('token');
     hello_user.innerHTML = localStorage.getItem('username');
     getData();
+    getDownloads();
 })
 
 myform.addEventListener('submit', function (e) {
@@ -45,7 +46,7 @@ myform.addEventListener('submit', function (e) {
     }
 })
 
-items_per_page.addEventListener('change', function(e){
+items_per_page.addEventListener('change', function (e) {
     e.preventDefault();
     localStorage.setItem('items_per_page', items_per_page.value);
     getData();
@@ -169,6 +170,9 @@ function showOnScreen(itemname, description, amount, category, img_src, id, tota
                 .catch(err => console.log(err));
         }
     })
+}
+
+function getDownloads() {
     axios.get('http://localhost:4000/download/get-downloads', { headers: { "Authorization": token } })
         .then(downloads => {
             download_items.replaceChildren();
@@ -215,11 +219,11 @@ function saveData() {
 function getData(page_no) {
     let page = 1;
     let items_per_page = 5;
-    if(localStorage.getItem('items_per_page')){
+    if (localStorage.getItem('items_per_page')) {
         items_per_page = localStorage.getItem('items_per_page');
         document.getElementById('items_per_page').value = localStorage.getItem('items_per_page');
     }
-    if(page_no){
+    if (page_no) {
         page = page_no;
     }
     axios.get(`http://localhost:4000/get-expenses?page=${page}&items_per_page=${items_per_page}`, { headers: { "Authorization": token } })
@@ -244,14 +248,13 @@ function getData(page_no) {
                 for (let i = 0; i < res.data.result.length; i++) {
                     showOnScreen(res.data.result[i].name, res.data.result[i].description, res.data.result[i].amount, res.data.result[i].category, res.data.result[i].img_src, res.data.result[i].id, res.data.total);
                 }
+                showPaginationButtons1(res);
             }
             else {
                 isEmpty = true;
                 total_spent.innerHTML = "0.00"
                 items.innerHTML = `<tr><td class="no_expenses_td">No expenses yet!</td></tr>`;
             }
-
-            showPaginationButtons1(res);
         })
         .catch(err => console.log(err));
 }
@@ -335,11 +338,11 @@ function showReport(type, page_no) {
                     tr.innerHTML = content;
                     report_table.append(tr);
                 }
-                if(type=='Yearly'){
+                if (type == 'Yearly') {
                     showPaginationButtons(res);
                     pagination_div.style.visibility = 'visible';
                 }
-                else{
+                else {
                     pagination_div.style.visibility = 'hidden';
                 }
             }

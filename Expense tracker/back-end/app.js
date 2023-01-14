@@ -26,7 +26,7 @@ const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 
-app.use(helmet());
+// app.use(helmet());
 app.use(morgan('combined', {stream: accessLogStream}));
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
